@@ -3,9 +3,13 @@ import { useState } from "react";
 import { MOVE } from "../screens/Game";
 
 export const ChessBoard = ({
+  chess,
   board,
   socket,
+  setBoard,
 }: {
+  chess: any;
+  setBoard: any;
   board: ({
     square: Square;
     type: PieceSymbol;
@@ -21,6 +25,9 @@ export const ChessBoard = ({
         return (
           <div key={i} className="flex">
             {row.map((square, j) => {
+              const squareRepresenation = (String.fromCharCode(97 + (j % 8)) +
+                "" +
+                (8 - i)) as Square;
               return (
                 <div
                   onClick={() => {
@@ -31,13 +38,20 @@ export const ChessBoard = ({
                         JSON.stringify({
                           type: MOVE,
                           payload: {
-                            from,
-                            to: square?.square,
+                            move: {
+                              from,
+                              to: squareRepresenation,
+                            },
                           },
                         })
                       );
                       setFrom(null);
-                      console.log({ from, to: square?.square });
+                      chess.move({
+                        from: from as Square,
+                        to: squareRepresenation,
+                      });
+                      setBoard(chess.board());
+                      console.log({ from, squareRepresenation });
                     }
                   }}
                   key={j}
