@@ -61,7 +61,18 @@ export const ChessBoard = ({
                 >
                   <div className="w-full justify-center flex h-full">
                     <div className="h-full justify-center flex flex-col ">
-                      {square ? square.type : ""}
+                      {square ? (
+                        <img
+                          src={`./${
+                            square?.color === "b"
+                              ? square?.type
+                              : `${square?.type?.toUpperCase()}`
+                          }.png`}
+                          alt=""
+                        />
+                      ) : (
+                        ""
+                      )}
                     </div>
                   </div>
                 </div>
