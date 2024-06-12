@@ -15,6 +15,8 @@ This is a chess application built using React and Node.js. It allows two players
 - The game does not have a timer
 - Currently the backend is not resilient if anything fails whole game will be lost
 - Plan to make it Resileint
+  ![Screenshot from 2024-06-12 10-39-33](https://github.com/AkhilJ321/chess/assets/98508374/80372edd-654a-4f3b-8ad0-035db2c59ba3)
+
 
 ## Installation
 
