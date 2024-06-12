@@ -8,6 +8,14 @@ This is a chess application built using React and Node.js. It allows two players
 - Move validation for chess moves
 - Integration with chess.js library
 
+## Progress
+
+- Currently the game is playable with two players
+- The game is not yet complete, the game does not end when a player wins
+- The game does not have a timer
+- Currently the backend is not resilient if anything fails whole game will be lost
+- Plan to make it Resileint
+
 ## Installation
 
 1. Clone the repository:
