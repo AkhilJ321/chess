@@ -45,9 +45,8 @@ export class Game {
       console.log(e);
       return;
     }
-    // update the board
-    // push the move
-    // check if the game is over
+    // db.moves.push(move)
+
     if (this.board.isGameOver()) {
       // send the game over message to both players
       this.player1.send(
