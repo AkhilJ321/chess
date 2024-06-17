@@ -32,6 +32,13 @@ export class GameManager {
           const game = new Game(this.pendingUser, socket);
           this.games.push(game);
           // store an entry in the database
+          db.game.create({
+            data: {
+              player1: "someId",
+              player2: "someId",
+              winner: null,
+            },
+          });
 
           this.pendingUser = null;
         } else {
