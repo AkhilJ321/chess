@@ -34,7 +34,7 @@ export class GameManager {
           // store an entry in the database
           db.game.create({
             data: {
-              player1: "someId",
+              player1: "idtobeadded",
               player2: "someId",
               winner: null,
             },
