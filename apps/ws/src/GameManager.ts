@@ -1,7 +1,6 @@
 import { Game } from "./Game";
 import { INIT_GAME, MOVE } from "./messages";
 import { WebSocket } from "ws";
-import { db } from "./db";
 
 export class GameManager {
   private games: Game[];
@@ -32,13 +31,6 @@ export class GameManager {
           const game = new Game(this.pendingUser, socket);
           this.games.push(game);
           // store an entry in the database
-          db.game.create({
-            data: {
-              player1: "idtobeadded",
-              player2: "someId",
-              winner: null,
-            },
-          });
 
           this.pendingUser = null;
         } else {
