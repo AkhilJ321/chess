@@ -1,64 +1,81 @@
-# Chess App
+# Turborepo starter
 
-This is a chess application built using React and Node.js. It allows two players to join a game and play against each other. The backend uses a WebSocket server for real-time communication between the players. The chess logic is handled by the chess.js library.
+This is an official starter Turborepo.
 
-## Features
+## Using this example
 
-- WebSocket server for real-time communication
-- Move validation for chess moves
-- Integration with chess.js library
+Run the following command:
 
-## Progress
+```sh
+npx create-turbo@latest
+```
 
-- Currently the game is playable with two players
-- The game is not yet complete, the game does not end when a player wins
-- The game does not have a timer
-- Currently the backend is not resilient if anything fails whole game will be lost
-- Plan to make it Resileint
-  ![Screenshot from 2024-06-12 10-39-33](https://github.com/AkhilJ321/chess/assets/98508374/80372edd-654a-4f3b-8ad0-035db2c59ba3)
+## What's inside?
 
+This Turborepo includes the following packages/apps:
 
-## Installation
+### Apps and Packages
 
-1. Clone the repository:
+- `docs`: a [Next.js](https://nextjs.org/) app
+- `web`: another [Next.js](https://nextjs.org/) app
+- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
+- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
+- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
 
-   ```bash
-   git clone https://github.com/AkhilJ321/chess.git
-   ```
+Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
 
-2. Install the dependencies for the backend:
+### Utilities
 
-   ```bash
-   cd chess/backend1
-   npm install
-   ```
+This Turborepo has some additional tools already setup for you:
 
-3. Install the dependencies for the frontend:
+- [TypeScript](https://www.typescriptlang.org/) for static type checking
+- [ESLint](https://eslint.org/) for code linting
+- [Prettier](https://prettier.io) for code formatting
 
-   ```bash
-   cd ../frontend
-   npm install
-   ```
+### Build
 
-## Usage
+To build all apps and packages, run the following command:
 
-1. Start the backend server:
+```
+cd my-turborepo
+pnpm build
+```
 
-   ```bash
-   cd ../backend
-   tsc -b
-   node dist/index.js
-   ```
+### Develop
 
-2. Start the frontend development server:
+To develop all apps and packages, run the following command:
 
-   ```bash
-   cd ../frontend
-   npm run dev
-   ```
+```
+cd my-turborepo
+pnpm dev
+```
 
-3. Open your browser and navigate to `http://localhost:5173` to access the chess app.
+### Remote Caching
 
-## Contributing
+Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
 
-Contributions are welcome! This project is in the build phase and many features can be added. Feel free to open an issue or submit a pull request.
+By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
+
+```
+cd my-turborepo
+npx turbo login
+```
+
+This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+
+Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+
+```
+npx turbo link
+```
+
+## Useful Links
+
+Learn more about the power of Turborepo:
+
+- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
+- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
+- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
+- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
+- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
+- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
