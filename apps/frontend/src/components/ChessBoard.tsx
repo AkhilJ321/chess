@@ -1,6 +1,7 @@
 import { Chess, Color, PieceSymbol, Square } from "chess.js";
 import { useState } from "react";
 import { MOVE } from "../screens/Game";
+import MovesTable from "./MovesTable";
 
 export const ChessBoard = ({
   chess,
@@ -26,6 +27,8 @@ export const ChessBoard = ({
   socket: WebSocket | null;
 }) => {
   const [from, setFrom] = useState<null | Square>(null);
+  const [moves, setMoves] = useState<{ from: Square; to: Square }[]>([]);
+  // Add moves int his section also for giving live updates for the moves
 
   return (
     <div className="text-white-200">
