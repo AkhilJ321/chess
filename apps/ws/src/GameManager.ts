@@ -86,6 +86,7 @@ export class GameManager {
                 })
               );
             }
+            // socket send logic
             socket.send(
               JSON.stringify({
                 type: GAME_JOINED,
