@@ -99,9 +99,10 @@ export class GameManager {
             return;
           } else {
             // look in db
-            const gameFromDb = await db.findUnique({
+
+            const gameFromDb = await db.game.findUnique({
               where: {
-                gameId,
+                id: gameId,
               },
               include: {
                 moves: {
