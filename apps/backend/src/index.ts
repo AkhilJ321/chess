@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import cookieSession from "cookie-session";
 import passport from "passport";
 import cors from "cors";
+import authRoute from "./router/auth";
 
 const app = express();
 
