@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const passport = require("passport");
-const CLIENT_URL = "http://localhost:5173/game";
+const CLIENT_URL = "http://localhost:5174/game";
 
 router.get(
   "/login/success",
@@ -53,7 +53,7 @@ router.get(
   "/logout",
   (req: { logout: () => void }, res: { redirect: (arg0: string) => void }) => {
     req.logout();
-    res.redirect("http://localhost:5173/");
+    res.redirect("http://localhost:5174/");
   }
 );
 
