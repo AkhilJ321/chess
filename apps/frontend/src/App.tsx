@@ -6,41 +6,35 @@ import { useState, useEffect } from "react";
 import Login from "./screens/Login";
 
 function App() {
-  const [user, setUser] = useState(null);
+  const [authenticated, setAuthenticated] = useState<boolean>(false);
   useEffect(() => {
-    const getUser = async () => {
-      fetch("http://localhost:5173/auth/login/success", {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Credentials": true,
-        },
-      })
-        .then((response) => {
-          if (response.status === 200) {
-            return response.json();
-          }
-          throw new Error("failed to authenticate user");
-        })
-        .then((responseJson) => {
-          setUser(responseJson.user);
-        })
-        .catch((error) => {
-          console.log(error);
+    const fetchToken = async () => {
+      try {
+        const res = await fetch("http://localhost:5174/auth/login/success", {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
         });
+        if (res.ok) {
+          setAuthenticated(true);
+        } else {
+          throw new Error("Failed to authenticate");
+        }
+      } catch (err) {
+        console.error(err);
+      }
     };
-
-    getUser();
+    fetchToken();
   }, []);
   return (
     <div className="h-screen bg-slate-950 ">
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Landing />} />
-          <Route path="/login" element={user ? <Game /> : <Login />} />
-          <Route path="/game" element={user ? <Game /> : <Login />} />
+          <Route path="/login" element={authenticated ? <Game /> : <Login />} />
+          <Route path="/game" element={authenticated ? <Game /> : <Login />} />
         </Routes>
       </BrowserRouter>
     </div>

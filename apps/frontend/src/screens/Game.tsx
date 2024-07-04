@@ -37,7 +37,7 @@ export const Game = () => {
           break;
       }
     };
-  }, [socket]);
+  }, [chess, socket]);
 
   return (
     <div className="justify-center flex">

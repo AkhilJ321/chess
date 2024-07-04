@@ -22,13 +22,20 @@ export const Landing = () => {
               <p>88,499 Playing Now</p>
             </div>
 
-            <div className="mt-4 flex justify-center ">
+            <div className="mt-4 flex  space-x-5 justify-center ">
               <Button
                 onClick={() => {
                   navigate("/game");
                 }}
               >
                 Play Online
+              </Button>
+              <Button
+                onClick={() => {
+                  navigate("/login");
+                }}
+              >
+                Login
               </Button>
             </div>
           </div>

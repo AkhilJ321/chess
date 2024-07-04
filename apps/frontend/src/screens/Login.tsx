@@ -2,7 +2,7 @@ import { Button } from "../components/Button";
 
 const Login = () => {
   const google = () => {
-    window.open("http://localhost:5173/auth/google", "_self");
+    window.open("http://localhost:5174/auth/google", "_self");
   };
 
   return (
@@ -16,11 +16,11 @@ const Login = () => {
             className="flex items-center justify-center px-4 py-2 bg-gray-700 text-white mb-4 cursor-pointer hover:bg-gray-600 transition-colors duration-300 rounded-md"
             onClick={google}
           >
-            <img src="/" alt="google" />
+            <img className=" w-8 h-8 mr-4" src="/google.svg" alt="google" />
             Sign in with Google
           </div>
           <div className="flex items-center justify-center px-4 py-2 bg-gray-700 text-white mb-4 cursor-pointer hover:bg-gray-600 transition-colors duration-300 rounded-md">
-            <img src="/" alt="google" />
+            <img className=" w-8 h-8 mr-4" src="/github.svg" alt="google" />
             Sign in with GitHub
           </div>
         </div>
