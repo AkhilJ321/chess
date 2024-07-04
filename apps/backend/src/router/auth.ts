@@ -1,8 +1,8 @@
 import dotenv from "dotenv";
 import { Router, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-const passport = require("passport");
-
+import passport from "passport";
+import { db } from "../db";
 dotenv.config();
 const PORT = process.env.PORT;
 const CLIENT_URL = "http://localhost:5173/game";
@@ -10,15 +10,21 @@ const JWT_SECRET = process.env.JWT_SECRET || "secret";
 const router = Router();
 
 interface User {
-  _id: string;
+  id: string;
 }
 
-router.get("/auth/refresh", (req: Request, res: Response) => {
+router.get("/refresh", async (req: Request, res: Response) => {
   if (req.user) {
     const user = req.user as User;
-    const token = jwt.sign({ userId: user._id }, JWT_SECRET);
 
-    res.json({ token });
+    const userDb = await db.user.findFirst({
+      where: {
+        id: user.id,
+      },
+    });
+    const token = jwt.sign({ userId: user.id }, JWT_SECRET);
+
+    res.json({ token, id: user.id, name: userDb?.name });
   } else {
     res.status(401).json({ success: false, message: "Unauthorized" });
   }

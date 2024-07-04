@@ -1,8 +1,9 @@
 import { Button } from "../components/Button";
-
+import { useNavigate } from "react-router-dom";
 const BACKEND_URL = "http://localhost:5174";
 
 const Login = () => {
+  const navigate = useNavigate();
   const google = () => {
     window.open(`${BACKEND_URL}/auth/google`, "_self");
   };
@@ -13,7 +14,7 @@ const Login = () => {
         Enter the Game World
       </div>
       <div className="p-8 bg-gray-800 flex flex-col  md:flex-row rounded-lg shadow-lg">
-        <div className="mb-8 md:mb-0 md:mr-8">
+        <div className="mb-8 md:mb-0 md:mr-8 justify-center flex flex-col">
           <div
             className="flex items-center justify-center px-4 py-2 bg-gray-700 text-white mb-4 cursor-pointer hover:bg-gray-600 transition-colors duration-300 rounded-md"
             onClick={google}
@@ -38,7 +39,9 @@ const Login = () => {
             type="text"
             placeholder="Username"
           />
-          <Button onClick={() => {}}>Enter as a Guest</Button>
+          <Button onClick={() => navigate("/game/random")}>
+            Enter as a Guest
+          </Button>
         </div>
       </div>
     </div>

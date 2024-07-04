@@ -25,7 +25,7 @@ export const Landing = () => {
             <div className="mt-4 flex  space-x-5 justify-center ">
               <Button
                 onClick={() => {
-                  navigate("/game");
+                  navigate("/game/random");
                 }}
               >
                 Play Online
