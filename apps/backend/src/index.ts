@@ -1,26 +1,29 @@
 import express from "express";
 import v1Router from "./router/v1";
 import dotenv from "dotenv";
-import cookieSession from "cookie-session";
-import passport from "passport";
+
+import passport, { authenticate } from "passport";
 import cors from "cors";
 import authRoute from "./router/auth";
-const passportSetup = require("./passport");
+const { initPassport } = require("./passport");
+import session from "express-session";
 
 const app = express();
 
 dotenv.config();
 
 app.use(
-  cookieSession({
-    name: "session",
-    keys: ["key1"],
-    maxAge: 24 * 60 * 60 * 1000,
+  session({
+    secret: "keyboard cat",
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false, maxAge: 360000 },
   })
 );
 
+initPassport();
 app.use(passport.initialize());
-app.use(passport.session());
+app.use(passport.authenticate("session") as any);
 
 app.use(
   cors({
@@ -33,7 +36,7 @@ app.use(
 app.use("/auth", authRoute);
 app.use("/v1", v1Router);
 
-const PORT = process.env.PORT || 5173;
+const PORT = process.env.PORT || 5174;
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

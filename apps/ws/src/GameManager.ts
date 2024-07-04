@@ -1,12 +1,23 @@
 import { Game } from "./Game";
-import { GAME_JOINED, INIT_GAME, JOIN_GAME, MOVE } from "./messages";
+import {
+  GAME_JOINED,
+  INIT_GAME,
+  JOIN_GAME,
+  MOVE,
+  OPPONENT_DISCONNECTED,
+} from "./messages";
 import { WebSocket } from "ws";
-import db from "@repo/db";
+import { db } from "./db";
+
+export interface SocketWithId {
+  id: string;
+  socket: WebSocket;
+}
 
 export class GameManager {
   private games: Game[];
-  private pendingUser: WebSocket | null;
-  private users: WebSocket[];
+  private pendingUser: { id: string; socket: WebSocket } | null;
+  private users: SocketWithId[];
   public getInstance() {}
 
   constructor() {
@@ -14,35 +25,60 @@ export class GameManager {
     this.pendingUser = null;
     this.users = [];
   }
-  addUser(socket: WebSocket) {
-    this.users.push(socket);
-    this.addHandler(socket);
+  addUser(user: SocketWithId) {
+    this.users.push(user);
+    this.addHandler(user);
   }
-  removeUser(socket: WebSocket) {
-    this.users = this.users.filter((user) => user !== socket);
-    // stop the game here as user left
+  removeUser(socket: WebSocket, userId: string) {
+    this.users = this.users.filter((user) => user.id !== userId);
+    const gameIndex = this.games.findIndex(
+      (game) =>
+        game.player1?.socket === socket || game.player2?.socket === socket
+    );
+    if (gameIndex !== -1) {
+      const game = this.games[gameIndex];
+      if (game.player1?.socket === socket) {
+        game.player1 = null;
+        if (game.player2) {
+          game.player2.socket.send(
+            JSON.stringify({ type: OPPONENT_DISCONNECTED })
+          );
+        } else {
+          this.games.splice(gameIndex, 1);
+        }
+      } else if (game.player2?.socket === socket) {
+        game.player2 = null;
+        if (game.player1) {
+          game.player1?.socket.send(
+            JSON.stringify({ type: OPPONENT_DISCONNECTED })
+          );
+        } else {
+          this.games.splice(gameIndex, 1);
+        }
+      }
+    }
   }
-  private addHandler(socket: WebSocket) {
+  private addHandler({ socket, id }: SocketWithId) {
     socket.on("message", async (data) => {
       const message = JSON.parse(data.toString());
 
       if (message.type === INIT_GAME) {
         if (this.pendingUser) {
           // start a game
-          const game = new Game(this.pendingUser, socket);
+          const game = new Game(this.pendingUser, { socket, id });
           await game.createGameHandler();
           this.games.push(game);
           // store an entry in the database
 
           this.pendingUser = null;
         } else {
-          this.pendingUser = socket;
+          this.pendingUser = { socket, id };
         }
       }
 
       if (message.type === MOVE) {
         const game = this.games.find(
-          (game) => game.player1 === socket || game.player2 === socket
+          (game) => game.player1?.id === id || game.player2?.id === id
         );
         if (game) {
           game.makeMove(socket, message.payload.move);
@@ -62,25 +98,22 @@ export class GameManager {
             if (player1 && player2) {
               socket.send(
                 JSON.stringify({
-                  type: GAME_JOINED,
-                  payload: {
-                    gameId,
-                    board,
-                  },
+                  type: "GAME_FULL",
                 })
               );
+              return;
             }
             if (!player1) {
-              availableGame.player1 = socket;
-              player2?.send(
+              availableGame.player1 = { socket, id };
+              player2?.socket.send(
                 JSON.stringify({
                   type: "OPPONENT_JOINED",
                 })
               );
             }
             if (!player2) {
-              availableGame.player2 = socket;
-              player1?.send(
+              availableGame.player2 = { socket, id };
+              player1?.socket.send(
                 JSON.stringify({
                   type: "OPPONENT_JOINED",
                 })
@@ -112,7 +145,7 @@ export class GameManager {
                 },
               },
             });
-            const game = new Game(socket, null);
+            const game = new Game({ socket, id }, null);
             gameFromDb?.moves.forEach((move: any) => {
               game.board.move(move);
             });

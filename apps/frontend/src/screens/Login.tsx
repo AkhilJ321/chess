@@ -1,8 +1,10 @@
 import { Button } from "../components/Button";
 
+const BACKEND_URL = "http://localhost:5174";
+
 const Login = () => {
   const google = () => {
-    window.open("http://localhost:5174/auth/google", "_self");
+    window.open(`${BACKEND_URL}/auth/google`, "_self");
   };
 
   return (

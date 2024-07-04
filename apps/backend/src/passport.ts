@@ -1,42 +1,63 @@
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 import passport from "passport";
 import dotenv from "dotenv";
+import { db } from "./db";
 
 dotenv.config();
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 
-if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
-  throw new Error("GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET must be provided");
-}
+export function initPassport() {
+  if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
+    throw new Error(
+      "GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET must be provided"
+    );
+  }
 
-passport.use(
-  new GoogleStrategy(
-    {
-      clientID: GOOGLE_CLIENT_ID,
-      clientSecret: GOOGLE_CLIENT_SECRET,
-      callbackURL: "/auth/google/callback",
-    },
-    (
-      accessToken: string,
-      refreshToken: string,
-      profile: any,
-      done: (error: any, user?: any) => void
-    ) => {
-      if (profile) {
-        console.log(profile);
-        return done(null, profile);
-      } else {
-        return done(new Error("Failed to verify user"), null);
+  passport.use(
+    new GoogleStrategy(
+      {
+        clientID: GOOGLE_CLIENT_ID,
+        clientSecret: GOOGLE_CLIENT_SECRET,
+        callbackURL: "/auth/google/callback",
+      },
+      (
+        accessToken: string,
+        refreshToken: string,
+        profile: any,
+        done: (error: any, user?: any) => void
+      ) => {
+        const user = db.user.upsert({
+          create: {
+            email: profile.emails[0].value,
+            name: profile.displayName,
+            provider: "GOOGLE",
+          },
+          update: {
+            name: profile.displayName,
+          },
+          where: {
+            email: profile.emails[0].value,
+          },
+        });
+        done(null, user);
       }
-    }
-  )
-);
+    )
+  );
 
-passport.serializeUser((user: any, done: (err: any, id?: any) => void) => {
-  done(null, user);
-});
-passport.deserializeUser((user: any, done: (err: any, id?: any) => void) => {
-  done(null, user);
-});
+  passport.serializeUser(function (user: any, cb) {
+    process.nextTick(function () {
+      cb(null, {
+        id: user.id,
+        username: user.username,
+        picture: user.picture,
+      });
+    });
+  });
+  passport.deserializeUser(function (user: any, cb) {
+    process.nextTick(function () {
+      return cb(null, user);
+    });
+  });
+}

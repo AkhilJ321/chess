@@ -1,17 +1,20 @@
 import { Chess } from "chess.js";
 import { GAME_OVER, INIT_GAME, MOVE } from "./messages";
 import { WebSocket } from "ws";
-import db from "@repo/db";
+import { db } from "./db";
 import { randomUUID } from "crypto";
 
 export class Game {
-  public player1: WebSocket | null;
-  public player2: WebSocket | null;
+  public player1: { id: string; socket: WebSocket } | null;
+  public player2: { id: string; socket: WebSocket } | null;
   public board: Chess;
   private startTime: Date;
   private moveCount = 0;
   public gameId: string;
-  constructor(player1: WebSocket | null, player2: WebSocket | null) {
+  constructor(
+    player1: { id: string; socket: WebSocket } | null,
+    player2: { id: string; socket: WebSocket } | null
+  ) {
     this.player1 = player1;
     this.player2 = player2;
     this.board = new Chess();
@@ -27,7 +30,7 @@ export class Game {
       return;
     }
     if (this.player1)
-      this.player1.send(
+      this.player1.socket.send(
         JSON.stringify({
           type: INIT_GAME,
           payload: {
@@ -37,7 +40,7 @@ export class Game {
         })
       );
     if (this.player2)
-      this.player2.send(
+      this.player2.socket.send(
         JSON.stringify({
           type: INIT_GAME,
           payload: {
@@ -56,10 +59,14 @@ export class Game {
         status: "IN_PROGRESS",
         currentFen: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
         whitePlayer: {
-          create: {},
+          connect: {
+            id: this.player1?.id,
+          },
         },
         blackPlayer: {
-          create: {},
+          connect: {
+            id: this.player2?.id,
+          },
         },
       },
       include: {
@@ -76,10 +83,11 @@ export class Game {
         data: {
           gameId: this.gameId,
           moveNumber: this.moveCount + 1,
-          startFen: move.from,
-          endFen: move.to,
+          from: move.from,
+          to: move.to,
           createdAt: new Date(Date.now()),
-          notation: this.board.fen(),
+          startFen: this.board.fen(),
+          endFen: this.board.fen(),
         },
       }),
       db.game.update({
@@ -95,10 +103,10 @@ export class Game {
 
   async makeMove(socket: WebSocket, move: { from: string; to: string }) {
     // validation the type of move using zod
-    if (this.moveCount % 2 === 0 && socket !== this.player1) {
+    if (this.moveCount % 2 === 0 && socket !== this.player1?.socket) {
       return;
     }
-    if (this.moveCount % 2 === 1 && socket !== this.player2) {
+    if (this.moveCount % 2 === 1 && socket !== this.player2?.socket) {
       return;
     }
     try {
@@ -113,7 +121,7 @@ export class Game {
     if (this.board.isGameOver()) {
       // send the game over message to both players
       if (this.player1) {
-        this.player1.send(
+        this.player1.socket.send(
           JSON.stringify({
             type: GAME_OVER,
             payload: {
@@ -123,7 +131,7 @@ export class Game {
         );
       }
       if (this.player2) {
-        this.player2.send(
+        this.player2.socket.send(
           JSON.stringify({
             type: GAME_OVER,
             payload: {
@@ -136,14 +144,14 @@ export class Game {
     }
 
     if (this.moveCount % 2 === 0) {
-      this.player2?.send(
+      this.player2?.socket.send(
         JSON.stringify({
           type: MOVE,
           payload: move,
         })
       );
     } else {
-      this.player1?.send(
+      this.player1?.socket.send(
         JSON.stringify({
           type: MOVE,
           payload: move,

@@ -10,7 +10,7 @@ function App() {
   useEffect(() => {
     const fetchToken = async () => {
       try {
-        const res = await fetch("http://localhost:5174/auth/login/success", {
+        const res = await fetch("http://localhost:5174/auth/auth/refresh", {
           method: "GET",
           credentials: "include",
           headers: {
@@ -19,6 +19,7 @@ function App() {
         });
         if (res.ok) {
           setAuthenticated(true);
+          localStorage.setItem("token", (await res.json()).token);
         } else {
           throw new Error("Failed to authenticate");
         }

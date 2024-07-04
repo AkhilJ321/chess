@@ -13,16 +13,12 @@ interface User {
   _id: string;
 }
 
-router.get("/login/success", (req: Request, res: Response) => {
+router.get("/auth/refresh", (req: Request, res: Response) => {
   if (req.user) {
     const user = req.user as User;
     const token = jwt.sign({ userId: user._id }, JWT_SECRET);
-    res.cookie("jwt", token, {
-      httpOnly: true,
 
-      sameSite: "strict",
-    });
-    res.status(200).json({ success: true, message: "successful" });
+    res.json({ token });
   } else {
     res.status(401).json({ success: false, message: "Unauthorized" });
   }
@@ -47,7 +43,10 @@ router.get("/logout", (req: Request, res: Response) => {
   });
 });
 
-router.get("/google", passport.authenticate("google", { scope: ["profile"] }));
+router.get(
+  "/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
 
 router.get(
   "/google/callback",
