@@ -5,7 +5,7 @@ import passport from "passport";
 import { db } from "../db";
 dotenv.config();
 const PORT = process.env.PORT;
-const CLIENT_URL = "http://localhost:5173/game";
+const CLIENT_URL = "http://localhost:5173/game/random";
 const JWT_SECRET = process.env.JWT_SECRET || "secret";
 const router = Router();
 
