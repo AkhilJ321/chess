@@ -27,19 +27,11 @@ export const ChessBoard = ({
   socket: WebSocket | null;
 }) => {
   const [from, setFrom] = useState<null | Square>(null);
-  const [moves, setMoves] = useState<{ from: Square; to: Square }[]>([]);
+  console.log("[DEBUG] Chessboard.tsx socket", socket);
   // Add moves int his section also for giving live updates for the moves
 
   return (
     <div className="flex">
-      <div className="mr-10">
-        {moves.length === 0 && (
-          <div className="mr-10">
-            Moves
-            <MovesTable moves={moves} />
-          </div>
-        )}
-      </div>
       <div className="text-white-200 mr-10">
         {board.map((row, i) => {
           return (
@@ -52,7 +44,7 @@ export const ChessBoard = ({
                   <div
                     onClick={() => {
                       if (!from) {
-                        setFrom(square?.square ?? null);
+                        setFrom(squareRepresenation);
                       } else {
                         socket?.send(
                           JSON.stringify({
@@ -84,7 +76,7 @@ export const ChessBoard = ({
                       <div className="h-full justify-center flex flex-col ">
                         {square ? (
                           <img
-                            src={`./${
+                            src={`/${
                               square?.color === "b"
                                 ? square?.type
                                 : `${square?.type?.toUpperCase()}`

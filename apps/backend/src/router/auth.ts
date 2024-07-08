@@ -16,13 +16,17 @@ interface User {
 router.get("/refresh", async (req: Request, res: Response) => {
   if (req.user) {
     const user = req.user as User;
-
+    console.log("[DEBUG] auth.ts(backend) req.user", req.user);
     const userDb = await db.user.findFirst({
       where: {
         id: user.id,
       },
     });
-    const token = jwt.sign({ userId: user.id }, JWT_SECRET);
+    console.log("[DEBUG] auth.ts(backend) userId:", user.id);
+    console.log("[DEBUG] auth.ts(backend) userDb:", userDb);
+    const token = jwt.sign({ userId: user.id }, JWT_SECRET, {
+      noTimestamp: true,
+    });
 
     res.json({ token, id: user.id, name: userDb?.name });
   } else {

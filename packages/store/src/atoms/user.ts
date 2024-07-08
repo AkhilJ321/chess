@@ -22,6 +22,7 @@ export const userAtom = atom<User>({
         });
         if (response.ok) {
           const data = await response.json();
+          console.log("[DEBUG] user.ts[store] response", response);
           return data;
         }
       } catch (e) {

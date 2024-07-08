@@ -27,6 +27,7 @@ export class GameManager {
   }
   addUser(user: SocketWithId) {
     this.users.push(user);
+
     this.addHandler(user);
   }
   removeUser(socket: WebSocket, userId: string) {
@@ -63,13 +64,16 @@ export class GameManager {
       const message = JSON.parse(data.toString());
 
       if (message.type === INIT_GAME) {
+        
+     
         if (this.pendingUser) {
+          console.log("[DEBUG] control reaches for creation of a new game");
           // start a game
           const game = new Game(this.pendingUser, { socket, id });
           await game.createGameHandler();
+
           this.games.push(game);
           // store an entry in the database
-
           this.pendingUser = null;
         } else {
           this.pendingUser = { socket, id };

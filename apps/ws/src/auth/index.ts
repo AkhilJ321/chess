@@ -4,5 +4,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "my_secret";
 
 export const extractUserId = (token: string) => {
   const decoded = jwt.verify(token, JWT_SECRET) as { userId: string };
+  console.log("[DEBUG] extractUserId decoded:", decoded);
+
   return decoded.userId;
 };

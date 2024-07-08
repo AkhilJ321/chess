@@ -16,8 +16,11 @@ export const Game = () => {
   const [chess, _setChess] = useState(new Chess());
   const [board, setBoard] = useState(chess.board());
   const [started, setStarted] = useState(false);
+
+  console.log("[DEBUG] Game.tsx gameId", gameId);
   useEffect(() => {
     if (!socket) {
+      console.log("Socket is not there");
       return;
     }
     socket.onmessage = (event) => {
@@ -43,6 +46,8 @@ export const Game = () => {
     };
   }, [chess, socket]);
 
+  if (!socket) return <div className="text-white text-6xl">Connecting...</div>;
+
   return (
     <div className="justify-center flex">
       <div className="pt-8 max-w-screen-lg w-full">
@@ -57,9 +62,9 @@ export const Game = () => {
           </div>
           <div className="col-span-2 bg-slate-900 w-full">
             <div className="flex justify-center p-4">
-              {!started && gameId === "random" && (
-                <Button
+              {!started && gameId === "random" &&  <Button
                   onClick={() => {
+                    console.log("[DEBUG] Game.tsx : Play Button Clicked");
                     socket?.send(
                       JSON.stringify({
                         type: INIT_GAME,
@@ -69,7 +74,7 @@ export const Game = () => {
                 >
                   Play
                 </Button>
-              )}
+              }
             </div>
           </div>
         </div>

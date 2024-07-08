@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 import passport, { authenticate } from "passport";
 import cors from "cors";
 import authRoute from "./router/auth";
-const { initPassport } = require("./passport");
+import { initPassport } from "./passport";
 import session from "express-session";
 
 const app = express();
@@ -14,16 +14,19 @@ dotenv.config();
 
 app.use(
   session({
-    secret: "keyboard cat",
+    secret: "my_secret",
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false, maxAge: 360000 },
+    cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 },
   })
 );
 
-initPassport();
 app.use(passport.initialize());
-app.use(passport.authenticate("session") as any);
+app.use(passport.session())
+initPassport();
+
+
+
 
 app.use(
   cors({

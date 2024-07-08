@@ -25,10 +25,18 @@ export class Game {
   async createGameHandler() {
     try {
       await this.createGameInDb();
+      console.log("game added in the db");
     } catch (e) {
       console.log(e);
       return;
     }
+    const users = await db.game.findMany({
+      where: {
+        // @ts-ignore
+        id: { in: [this.player1.id, this.player2.id] },
+      },
+    });
+    console.log("[DEBUG] Game.ts: users", users);
     if (this.player1)
       this.player1.socket.send(
         JSON.stringify({
@@ -36,6 +44,8 @@ export class Game {
           payload: {
             color: "white",
             gameId: this.gameId,
+
+            fen: this.board.fen(),
           },
         })
       );
@@ -111,6 +121,7 @@ export class Game {
     }
     try {
       this.board.move(move);
+      console.log("[DEBUG] Game.ts move", move);
     } catch (e) {
       console.log(e);
       return;

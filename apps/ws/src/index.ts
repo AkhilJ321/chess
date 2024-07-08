@@ -9,7 +9,9 @@ const gameManager = new GameManager();
 wss.on("connection", function connection(ws, req) {
   // @ts-ignore overload
   const token: string = url.parse(req.url, true).query.token;
+  console.log("[DEBUG] index.ts token parsed from url", token);
   const userId = extractUserId(token);
+  console.log("[DEBUG] userID", userId);
 
   gameManager.addUser({ socket: ws, id: userId });
   ws.on("disconnect", () => {

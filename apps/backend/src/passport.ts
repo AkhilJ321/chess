@@ -47,16 +47,27 @@ export function initPassport() {
   );
 
   passport.serializeUser(function (user: any, cb) {
-    process.nextTick(function () {
+    user.then((actualUser:any) => {
+      console.log('[DEBUG] Serialized user:', actualUser); // Log the actual user object
+  
+      // Serialize the actual user object into the session
       cb(null, {
-        id: user.id,
-        username: user.username,
-        picture: user.picture,
+        id: actualUser.id,
+        username: actualUser.username,
+        picture: actualUser.picture,
+        // Add any other necessary user information you want to serialize
       });
+    }).catch((err:any) => {
+      // Handle any errors that occur during user resolution
+      console.error('[ERROR] Failed to serialize user:', err);
+      cb(err); // Pass error to Passport
     });
   });
+  
   passport.deserializeUser(function (user: any, cb) {
     process.nextTick(function () {
+      console.log('[DEBUG] passport.ts Deserialize result:',user)
+      
       return cb(null, user);
     });
   });
