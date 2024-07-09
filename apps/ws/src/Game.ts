@@ -30,7 +30,7 @@ export class Game {
       console.log(e);
       return;
     }
-    const users = await db.game.findMany({
+    const users = await db.user.findMany({
       where: {
         // @ts-ignore
         id: { in: [this.player1.id, this.player2.id] },
@@ -44,7 +44,8 @@ export class Game {
           payload: {
             color: "white",
             gameId: this.gameId,
-
+            whitePlayer: users.find((user)=> user.id === this.player1?.id)?.name,
+            blackPlayer: users.find((user)=>user.id === this.player2?.id)?.name,
             fen: this.board.fen(),
           },
         })
@@ -56,6 +57,9 @@ export class Game {
           payload: {
             color: "black",
             gameId: this.gameId,
+            whitePlayerName: users.find((user)=> user.id === this.player1?.id)?.name,
+            blackPlayerName: users.find((user)=>user.id === this.player2?.id)?.name,
+            fen: this.board.fen(),
           },
         })
       );

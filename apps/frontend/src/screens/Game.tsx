@@ -4,10 +4,16 @@ import { ChessBoard } from "../components/ChessBoard";
 import { useSocket } from "../hooks/useSocket";
 import { Chess } from "chess.js";
 import { useNavigate, useParams } from "react-router-dom";
+
 // TODO: Move together, there's code repetion here
 export const INIT_GAME = "init_game";
 export const MOVE = "move";
 export const GAME_OVER = "game_over";
+
+interface Metadata {
+  blackPlayer: string;
+  whitePlayer: string;
+}
 
 export const Game = () => {
   const socket = useSocket();
@@ -16,6 +22,7 @@ export const Game = () => {
   const [chess, _setChess] = useState(new Chess());
   const [board, setBoard] = useState(chess.board());
   const [started, setStarted] = useState(false);
+  const [gameMetadata,setGameMetadata] = useState<Metadata | null>(null);
 
   console.log("[DEBUG] Game.tsx gameId", gameId);
   useEffect(() => {
@@ -32,6 +39,10 @@ export const Game = () => {
           setBoard(chess.board());
           setStarted(true);
           navigate(`/game/${message.payload.gameId}`);
+          setGameMetadata({
+            whitePlayer:message.payload.whitePlayer,
+            blackPlayer: message.payload.blackPlayer
+          })
           break;
         case MOVE:
           const move = message.payload;
@@ -48,7 +59,10 @@ export const Game = () => {
 
   if (!socket) return <div className="text-white text-6xl">Connecting...</div>;
 
-  return (
+  return (<div>
+    <div className="justify-center flex pt-4 text-white">
+            {gameMetadata?.blackPlayer} vs {gameMetadata?.whitePlayer}
+        </div>
     <div className="justify-center flex">
       <div className="pt-8 max-w-screen-lg w-full">
         <div className="grid grid-cols-6 gap-4 w-full ">
@@ -79,6 +93,7 @@ export const Game = () => {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 };
