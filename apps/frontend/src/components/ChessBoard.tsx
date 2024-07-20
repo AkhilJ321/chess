@@ -8,6 +8,7 @@ export const ChessBoard = ({
   board,
   socket,
   setBoard,
+  status,
 }: {
   chess: Chess;
   setBoard: React.Dispatch<
@@ -25,9 +26,10 @@ export const ChessBoard = ({
     color: Color;
   } | null)[][];
   socket: WebSocket | null;
+  status: boolean;
 }) => {
   const [from, setFrom] = useState<null | Square>(null);
-  console.log("[DEBUG] Chessboard.tsx socket", socket);
+
   // Add moves int his section also for giving live updates for the moves
 
   return (
@@ -43,6 +45,9 @@ export const ChessBoard = ({
                 return (
                   <div
                     onClick={() => {
+                      if (!status) {
+                        return;
+                      }
                       if (!from) {
                         setFrom(squareRepresenation);
                       } else {

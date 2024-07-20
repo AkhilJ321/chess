@@ -57,8 +57,8 @@ export class Game {
           payload: {
             color: "black",
             gameId: this.gameId,
-            whitePlayerName: users.find((user)=> user.id === this.player1?.id)?.name,
-            blackPlayerName: users.find((user)=>user.id === this.player2?.id)?.name,
+            whitePlayer: users.find((user)=> user.id === this.player1?.id)?.name,
+            blackPlayer: users.find((user)=>user.id === this.player2?.id)?.name,
             fen: this.board.fen(),
           },
         })

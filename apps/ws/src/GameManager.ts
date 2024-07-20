@@ -64,8 +64,15 @@ export class GameManager {
       const message = JSON.parse(data.toString());
 
       if (message.type === INIT_GAME) {
-        
-     
+        // check if the player's id is similar to the player of pending id
+        if (this.pendingUser?.id === id) {
+          // same player is trying to join the game
+          console.log("[DEBUG] pending user id", this.pendingUser?.id);
+          console.log("[DEBUG] id", id);
+          console.log("[DEBUG] same player is trying to join the game");
+          return;
+        }
+
         if (this.pendingUser) {
           console.log("[DEBUG] control reaches for creation of a new game");
           // start a game
