@@ -1,37 +1,37 @@
-## Chess
+# Chess App
 
-Building a platform where people can
+- This is a chess application built using React and Node.js. It allows two players to join a game and play against each other. The backend uses a WebSocket server for real-time communication between the players. The chess logic is handled by the chess.js library.
 
-1. Sign up
-2. Create a new match/get connected to an existing match
-3. During the match, let users play moves
-4. Have a rating system that goes up and down similar to standard chess rating
+## Features
 
-## Tech stack
+- WebSocket server for real-time communication
+- Move validation for chess moves
+- Integration with chess.js library
 
-Let's keep it simple
+## Progress
 
-1. React for Frontend
-2. Node.js for Backend
-3. Typescript as the language
-4. Separate Websocket servers for handling real time games
-5. Redis for storing all moves of a game in a queue
+- Currently the game is playable with two players
+- Plan to make it Resileint
+  ![Screenshot from 2024-06-12 10-39-33](https://github.com/AkhilJ321/chess/assets/98508374/80372edd-654a-4f3b-8ad0-035db2c59ba3)
+- Join an arena option to be added (Pub/Sub)
+  ![alt text](image.png)
 
-## Setting it up locally
+  ## Installation
 
- - Clone the repo
- - Copy over .env.example over to .env everywhere
- - Update .env
-    - Postgres DB Credentials
-    - Github/Google Auth credentials
- - npm install
- - Start ws server
-    - cd apps/ws
-    - npm run dev
- - Start Backend
-    - cd apps/backend
-    - npm run dev
- - Start frontend
-    - cd apps/frontend
-    - npm run dev
+  1. Clone the repository:
 
+  ```bash
+  git clone https://github.com/AkhilJ321/chess.git
+  ```
+
+  2. Install the dependencies :
+
+  ```bash
+  npm install
+  ```
+
+  3. Start the server:
+
+  ```bash
+  npm run dev
+  ```
