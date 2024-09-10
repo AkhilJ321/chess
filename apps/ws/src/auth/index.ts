@@ -1,10 +1,17 @@
-import jwt from "jsonwebtoken";
+import jwt from 'jsonwebtoken';
+import { User } from '../SocketManager';
+import { Player } from '../Game';
+import { WebSocket } from 'ws';
 
-const JWT_SECRET = process.env.JWT_SECRET || "my_secret";
+const JWT_SECRET = process.env.JWT_SECRET || 'my_secret';
 
-export const extractUserId = (token: string) => {
-  const decoded = jwt.verify(token, JWT_SECRET) as { userId: string };
-  console.log("[DEBUG] extractUserId decoded:", decoded);
+export interface userJwtClaims {
+  userId: string;
+  name: string;
+  isGuest?: boolean;
+}
 
-  return decoded.userId;
+export const extractAuthUser = (token: string, ws: WebSocket): User => {
+  const decoded = jwt.verify(token, JWT_SECRET) as userJwtClaims;
+  return new User(ws, decoded);
 };

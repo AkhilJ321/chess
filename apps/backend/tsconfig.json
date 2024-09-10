@@ -6,9 +6,14 @@
     "outDir": "./dist",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "strict": true,
+    "strict": true,                          
     "skipLibCheck": true
+
   },
-  "include": ["src/**/*", "routes/**/*", "**/*.js"],
-  "outDir": "dist"
+  "include": [
+  "src/**/*",
+  "routes/**/*",
+  "**/*.js"
+],
+"outDir": "dist" 
 }
